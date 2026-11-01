@@ -8,7 +8,7 @@ Prepare with `scripts/game_port_prepare.py prepare --game opentyrian --allow-net
 Build the exported pin offline, applying only the checked-in native-path patch:
 
 ```sh
-python3 ports/opentyrian/build_open3.py --source build/game-ports/sources/opentyrian \
+python3 build_open3.py --source build/game-ports/sources/opentyrian \
   --stove /path/to/verified-open3 --out build/opentyrian-open3 --jobs 2
 python3 scripts/fetch_runtime_data.py --root . --game opentyrian --allow-network
 ```

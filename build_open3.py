@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from build_sdl3_port import digest, verify_stove
 
@@ -42,7 +42,7 @@ def main():
         archive.seek(0)
         subprocess.run(["tar", "-xf", "-", "-C", str(work)], stdin=archive, check=True)
     patches = {}
-    for patch in sorted((ROOT / "ports/opentyrian/patches").glob("*.patch")):
+    for patch in sorted((ROOT / "patches").glob("*.patch")):
         with patch.open() as content:
             subprocess.run(["patch", "--batch", "--forward", "--fuzz=0", "-p1"],
                            cwd=work, stdin=content, check=True)

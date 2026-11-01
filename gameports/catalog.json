@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "ports": {
+    "opentyrian": {
+      "order": 18,
+      "title": "OpenTyrian",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/opentyrian/opentyrian.git",
+        "commit": "ac5d0e71f4245744350c6116ce24f10624da58f8",
+        "submodules": false
+      },
+      "contentPolicy": "GPL-2.0-or-later engine; freeware Tyrian data has separate terms and is fetched locally, not committed.",
+      "runtimeData": {
+        "mode": "auto-fetch",
+        "dataset": "tyrian-2.1",
+        "manifest": "gameports/runtime-data.json"
+      }
+    }
+  }
+}
