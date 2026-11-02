@@ -34,6 +34,22 @@ of exactly 320x200 and back. Setup > Graphics still offers the scalers and
 scaling modes; `PROGDIR:User/opentyrian.cfg` keeps the choice.
 `SetEnv OPENTYRIAN_FPS 1` logs the frames shown every five seconds (a file name
 instead of `1` adds the lines to that file).
+
+### Controls
+
+Keyboard (upstream's defaults, changeable in Options > Keyboard): arrow keys
+move, Space fires, Return changes the rear gun's mode, Ctrl and Left Alt fire
+the left and right sidekicks, P pauses, Escape opens the in-game menu (and
+leaves menus), Alt+Return switches screen and window. The mouse moves the ship
+too.
+
+Joysticks and pads come through SDL from GFOpenInput (lowlevel.library where
+GFOpenInput isn't installed). Port 2's stick is SDL joystick 1. With
+GFOpenInput every pad has SDL's game controller layout, so the Amiga build adds
+to upstream's defaults (stick or d-pad moves, A fires, B changes mode, X and Y
+the sidekicks, Back the menu, Guide pauses): the shoulders also fire the
+sidekicks and Start opens the menu, which a CD32 pad (no Back or Guide) needs.
+Options > Joystick shows and changes them; Reset to Defaults brings them back.
 The data digest is pinned in the runtime manifest. Assets stay external;
 freeware is not permission to redistribute every asset without review.
 
