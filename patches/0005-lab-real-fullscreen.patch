@@ -1,0 +1,18 @@
+diff --git a/src/video.c b/src/video.c
+index d85cec9..a91dfbc 100644
+--- a/src/video.c
++++ b/src/video.c
+@@ -216,7 +216,13 @@ void reinit_fullscreen(int new_display)
+ 	{
+ 		window_center_in_display(fullscreen_display);
+ 
++#ifdef __amigaos__
++		/* Lab build: SDL's real full-screen mode (a screen in the display
++		   mode closest to the window), to check SDL2.module's. */
++		if (SDL_SetWindowFullscreen(main_window, SDL_WINDOW_FULLSCREEN) != 0)
++#else
+ 		if (SDL_SetWindowFullscreen(main_window, SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
++#endif
+ 		{
+ 			reinit_fullscreen(-1);
+ 			return;
