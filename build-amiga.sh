@@ -34,8 +34,12 @@ if (stove / "STOVE.json").is_file():
 if got is None and (stove / "provenance.json").is_file():
     got = json.loads((stove / "provenance.json").read_text()).get("archive_sha256")
 if got != want:
+    for name in ("STOVE.json", "provenance.json"):
+        if (stove / name).is_file():
+            print((stove / name).read_text()[:1500])
     sys.exit(f"{stove} is not the OpenAmigaGCC 16.2.0-open3 stove (compiler archive {got})")
 EOF
+"$CC" --version | head -n 1
 "$CC" --version | head -n 1 | grep -q '16.2.0-open3' || { echo "$CC is not 16.2.0-open3"; exit 2; }
 
 PIN=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["ports"]["opentyrian"]["source"]["commit"])' "$HERE/gameports/catalog.json")
