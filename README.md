@@ -50,6 +50,16 @@ to upstream's defaults (stick or d-pad moves, A fires, B changes mode, X and Y
 the sidekicks, Back the menu, Guide pauses): the shoulders also fire the
 sidekicks and Start opens the menu, which a CD32 pad (no Back or Guide) needs.
 Options > Joystick shows and changes them; Reset to Defaults brings them back.
+
+### Audio
+
+Music (the game's OPL2 tunes, emulated) and sound effects are mixed by the game
+into one 44.1 kHz 16-bit mono stream that SDL plays through AHI (OpenAHI's
+driver on AmiCradle); `--no-sound` turns it off. The log says what SDL opened
+(`Audio: ahi, 44100 Hz, 1 channel(s), 1024 samples a buffer`). With
+`OPENTYRIAN_FPS` set, each five-second line also gives the buffers mixed and
+the time spent mixing them: 215 or 216 buffers in five seconds (44100 / 1024 a
+second) means none was late.
 The data digest is pinned in the runtime manifest. Assets stay external;
 freeware is not permission to redistribute every asset without review.
 
