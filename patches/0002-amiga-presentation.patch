@@ -5,10 +5,10 @@
  {
  	// defaults
 +#ifdef __amigaos__
-+	/* The game draws 320x200. On an Amiga it starts on a screen of its own
-+	   (the frame whole, at a whole multiple), and Alt+Return gives a window
-+	   of exactly 320x200; no CPU scaler is in the way. Setup > Graphics
-+	   still offers the scalers. */
++	/* The game draws 320x200. On an Amiga it starts on a 320x200 screen of
++	   its own (SDL's real full screen, video.c), and Alt+Return gives a
++	   window of exactly 320x200; no CPU scaler is in the way. Setup >
++	   Graphics still offers the scalers. */
 +	fullscreen_display = 0;
 +	set_scaler_by_name("None");
 +#else
@@ -30,7 +30,22 @@
  #include <stdbool.h>
  #include <stdlib.h>
  #include <string.h>
-@@ -245,6 +248,12 @@ void toggle_fullscreen(void)
+@@ -210,7 +213,14 @@ void reinit_fullscreen(int new_display)
+ 	{
+ 		window_center_in_display(fullscreen_display);
+ 
++#ifdef __amigaos__
++		/* SDL's real full screen: a screen of the game's own in the display
++		   mode closest to the window (320x200 with no scaler), not one the
++		   size of the desktop with the frame scaled into it. */
++		if (SDL_SetWindowFullscreen(main_window, SDL_WINDOW_FULLSCREEN) != 0)
++#else
+ 		if (SDL_SetWindowFullscreen(main_window, SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
++#endif
+ 		{
+ 			reinit_fullscreen(-1);
+ 			return;
+@@ -245,6 +255,12 @@ void toggle_fullscreen(void)
  		reinit_fullscreen(-1);
  	else
  		reinit_fullscreen(SDL_GetWindowDisplayIndex(main_window));
@@ -43,7 +58,7 @@
  }
  
  bool init_scaler(unsigned int new_scaler)
-@@ -317,6 +326,12 @@ static void calc_dst_render_rect(SDL_Surface *const src_surface, SDL_Rect *const
+@@ -317,6 +333,12 @@ static void calc_dst_render_rect(SDL_Surface *const src_surface, SDL_Rect *const
  	// in the window.
  
  	int win_w, win_h;
@@ -56,7 +71,7 @@
  	SDL_GetWindowSize(main_window, &win_w, &win_h);
  
  	int maxh_width, maxw_height;
-@@ -393,6 +408,50 @@ static void scale_and_flip(SDL_Surface *src_surface)
+@@ -393,6 +415,50 @@ static void scale_and_flip(SDL_Surface *src_surface)
  
  	// Save output rect to be used by mouse functions
  	last_output_rect = dst_rect;
