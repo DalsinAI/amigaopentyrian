@@ -47,8 +47,8 @@ icons are drawn from OpenTyrian's own program icon.
 Build
 -----
 
-Engine commit @SOURCE_COMMIT@, built with OpenAmigaGCC
-@COMPILER_RELEASE@. The program's SHA-256:
+Engine commit @SOURCE_COMMIT@,
+built with OpenAmigaGCC @COMPILER_RELEASE@. The program's SHA-256:
 @EXECUTABLE_SHA256@
 
 Port: the AmiCradle Team, https://github.com/DalsinAI/amigaopentyrian
