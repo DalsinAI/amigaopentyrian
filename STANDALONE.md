@@ -1,7 +1,7 @@
 # Standalone port repository
 
 `amigaopentyrian` is the canonical home of the AmigaOS 3.x / AmiCradle work for
-`OpenTyrian`. Its history was split from `DalsinAI/amigachrome-gameports` without
+`OpenTyrian`. Its history was split from `DalsinAI/amicradle-gameports` without
 flattening the commits.
 
 Repository-local build support under `scripts/`, `toolchain/` and `gameports/`
