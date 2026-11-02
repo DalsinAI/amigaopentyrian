@@ -28,10 +28,12 @@ target `runtime-data` stages the pinned Tyrian 2.1 data for a lab as
 
 ### Display
 
-The game draws 320x200. On an Amiga it starts on a screen of its own (on an
-RTG board the desktop-sized 640x480 mode, the frame whole at 2x with black
-bands above and below) with no CPU scaler. Alt+Return gives a Workbench window
-of exactly 320x200 and back. Setup > Graphics still offers the scalers and
+The game draws 320x200. On an Amiga it starts on a 320x200 screen of its own
+(SDL's real full screen, `SDL_WINDOW_FULLSCREEN`, in place of upstream's
+desktop-sized `SDL_WINDOW_FULLSCREEN_DESKTOP`) with no CPU scaler; this needs
+SDL2.module from gfopenrtg main at `210df77` or later. Alt+Return gives a
+Workbench window of exactly 320x200 and back. With a scaler chosen the screen
+takes the display mode closest to the scaled size. Setup > Graphics still offers the scalers and
 scaling modes; `PROGDIR:User/opentyrian.cfg` keeps the choice.
 `SetEnv OPENTYRIAN_FPS 1` logs the frames shown every five seconds (a file name
 instead of `1` adds the lines to that file).
@@ -74,6 +76,57 @@ written.
 The data digest is pinned in the runtime manifest. Assets stay external;
 freeware is not permission to redistribute every asset without review.
 
+## Observed 2 November 2026: SDL's real full screen
+
+GFOpenRTG's SDL2 module now gives SDL's real full screen a screen of the
+program's own in the mode closest to the window, drawn whole, and closes it
+again on leaving full screen or ending (gfopenrtg #172, with #171 and #173,
+merged on main at `210df77`). Commit `cff23ec` asks for it
+(`patches/0002-amiga-presentation.patch`; `0004`'s last `video.c` hunk
+header moves with it). Executable, built by Cradle's `stove_build` with the
+`os32-gcc16` stove (OpenAmigaGCC 16.2.0-open4): SHA-256
+`b80fe7130efe50d7907fad787c28b8be27b60db144feaf3181bc0031d8f15b51`
+(770,820 bytes).
+
+Run in `lab:ports-sdl2`, a fresh copy of Instance-32 (68040 + 68882,
+Kickstart 47.100, RTG 1920x1080, AHI, muted), with SDL2.module built from
+gfopenrtg `210df77` (SHA-256 `82e8be3d...`, 1,002,284 bytes) in both
+`LIBS:OpenGPU/` and `LIBS:GFOpenGPU/`, the pinned data from `runtime-data`,
+no `PROGDIR:User` before the first start, sound on,
+`SetEnv OPENTYRIAN_FPS RAM:ot-fps.txt`, `opentyrian --data=data`.
+
+- Display: the title on a 320x200 screen of the game's own (the RTG head
+  reports 320x200), the frame whole, 1:1; the log has `window surface in
+  video RAM (320x200, 1280 bytes a row)`. Alt+Return gave the 320x200
+  window on the Workbench, and Alt+Return again the 320x200 screen.
+- Play: 1 Player Arcade, Episode 1, Normal, level 1 (Tyrian) with
+  `HoldKeys 60 HOLD 40 SWAY PERIOD 40` (fire held, swaying), 2,757 points;
+  Esc, Quit Level, Quit Game and OK back to the title, Quit: the game ended,
+  the Workbench came back, and `opentyrian.cfg` (with `fullscreen 0`,
+  `scaler None`), `tyrian.cfg` and `tyrian.sav` were written to
+  `PROGDIR:User`. The mouse clicks landed where they were aimed on the
+  320x200 screen (OK, Quit).
+- Frame rate (`OPENTYRIAN_FPS`) in play: **34.7 a second** in nearly every
+  five-second window (34.0 to 36.6, one catch-up window of 42.5), the game's
+  Normal pace of 34.8, with 215 or 216 audio buffers in each window (none
+  late) and 11 to 20 % of the time in the mixer.
+- Not right: in the first 80 seconds (title, the two Alt+Return switches,
+  the menus, while full-size 1920x1080 lab screenshots were being taken)
+  audio fell behind: 700 buffers in 18.3 s (38 a second against 43) with
+  half the time in the mixer, then 397 in 9.2 s. It recovered by itself
+  before play and stayed on time to the end. This is like the slow spells
+  noted below; the cause is still not established.
+- In the Quit Game box ("Are you sure you want to exit?"), Left lit OK
+  but Return (and once Space) still went back to the Game Menu, three times;
+  a mouse click on OK worked. Not looked into yet: it may be upstream's
+  mixed mouse and keyboard handling in that box rather than anything of the
+  port's.
+
+![The title on its own 320x200 screen](docs/observed/sdl2fixed-title-320x200.png)
+![Alt+Return: the 320x200 window](docs/observed/sdl2fixed-altreturn-window.png)
+![Level 1](docs/observed/sdl2fixed-play-320x200.png)
+![Level 1, 1,805 points](docs/observed/sdl2fixed-play-1805.png)
+
 ## Observed 2 November 2026
 
 Lab `lab:opentyrian`, a copy of Instance-32 (Kickstart 47.100, 68040 + 68882,
@@ -83,8 +136,10 @@ the acaudio driver), built by Cradle's `stove_build` with OpenAmigaGCC
 `ac7115c810ddac443c4280632cc3fef1966a56b5b62ed370fa78e97d031dec64`), data
 staged by `runtime-data/build-amiga.sh` (85 files from the pinned ZIP).
 
-- Display: the frame is whole on a 640x480 screen at 2x, and in an exactly
-  320x200 Workbench window after Alt+Return (and back).
+- Display: the frame is whole on a 640x480 screen at 2x (SDL's
+  desktop-sized full screen, then the default; see above for the 320x200
+  screen that replaced it), and in an exactly 320x200 Workbench window after
+  Alt+Return (and back).
 - Keyboard: menus, movement, fire, change fire mode, both sidekick keys, pause,
   the Escape menu and text entry all worked (see the step PRs for the
   screenshots).
