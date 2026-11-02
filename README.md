@@ -5,7 +5,8 @@ Source pin: `ac5d0e71f4245744350c6116ce24f10624da58f8`,
 SDL2, 68040 + FPU, libnix, GCC 16.2.0-open3. Networking disabled.
 
 Prepare with `scripts/game_port_prepare.py prepare --game opentyrian --allow-network`.
-Build the exported pin offline, applying only the checked-in native-path patch:
+Build the exported pin offline, applying the checked-in patches (`patches/`, in
+order, with no fuzz):
 
 ```sh
 python3 build_open3.py --source build/game-ports/sources/opentyrian \
@@ -17,6 +18,22 @@ The helper writes `receipt.json` and `build.log`; it does not deploy or fetch.
 Put the binary beside `data/` with the contents of the upstream-linked Tyrian
 2.1 ZIP (flat, lowercase names). User files go in `PROGDIR:User`.
 Run `opentyrian --no-sound --no-joystick --data=data` for the muted smoke.
+
+On Cradle, `stove_build` with target `.` runs `build-amiga.sh` (the same build,
+the upstream pin fetched by the job; it takes the os32-gcc16 stove with
+OpenAmigaGCC 16.2.0-open3 or open4 and records which in `receipt.json`), and
+target `runtime-data` stages the pinned Tyrian 2.1 data for a lab as
+`OpenTyrian/data`. Both are for labs; neither is a package.
+
+### Display
+
+The game draws 320x200. On an Amiga it starts on a screen of its own (on an
+RTG board the desktop-sized 640x480 mode, the frame whole at 2x with black
+bands above and below) with no CPU scaler. Alt+Return gives a Workbench window
+of exactly 320x200 and back. Setup > Graphics still offers the scalers and
+scaling modes; `PROGDIR:User/opentyrian.cfg` keeps the choice.
+`SetEnv OPENTYRIAN_FPS 1` logs the frames shown every five seconds (a file name
+instead of `1` adds the lines to that file).
 The data digest is pinned in the runtime manifest. Assets stay external;
 freeware is not permission to redistribute every asset without review.
 
