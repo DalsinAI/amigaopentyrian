@@ -1,0 +1,34 @@
+--- a/src/joystick.c
++++ b/src/joystick.c
+@@ -353,6 +353,31 @@ void reset_joystick_assignments(int j)
+ 		}
+ 	}
+ 	
++#ifdef __amigaos__
++	/* GFOpenInput gives each pad SDL's game controller layout: A B X Y are
++	   buttons 1-4, Back and Guide 5 and 6, Start 7, the shoulders 10 and 11.
++	   A CD32 pad (and most others) has no Back or Guide, so Start opens the
++	   menu (which pauses the game too), and the shoulders work the
++	   sidekicks as well as X and Y. lowlevel.library's ports (seven
++	   buttons, no game controller layout) keep the first six as they are. */
++	if ((SDL_IsGameController(j) &&
++	     SDL_JoystickNumButtons(joystick[j].handle) > SDL_CONTROLLER_BUTTON_START) ||
++	    SDL_JoystickNumButtons(joystick[j].handle) == SDL_CONTROLLER_BUTTON_MAX)
++	{
++		static const struct { int action, button; } extra[] =
++		{
++			{ 6, SDL_CONTROLLER_BUTTON_LEFTSHOULDER },   // left sidekick
++			{ 7, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER },  // right sidekick
++			{ 8, SDL_CONTROLLER_BUTTON_START },          // menu
++		};
++		for (size_t i = 0; i < COUNTOF(extra); ++i)
++		{
++			joystick[j].assignment[extra[i].action][1].type = BUTTON;
++			joystick[j].assignment[extra[i].action][1].num = extra[i].button;
++		}
++	}
++#endif
++
+ 	joystick[j].analog = false;
+ 	joystick[j].sensitivity = 5;
+ 	joystick[j].threshold = 5;
