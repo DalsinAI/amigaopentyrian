@@ -1,8 +1,9 @@
-# OpenTyrian — active open3 intake
+# OpenTyrian for AmigaOS 3.x / AmiCradle — TESTING
 
 Source pin: `ac5d0e71f4245744350c6116ce24f10624da58f8`,
 [upstream](https://github.com/opentyrian/opentyrian). GPL-2.0-or-later engine.
-SDL2, 68040 + FPU, libnix, GCC 16.2.0-open3. Networking disabled.
+SDL2 (GFOpenGPU's SDL2.module), 68040 + FPU, libnix, OpenAmigaGCC 16.2.0-open3
+or open4. Networking disabled.
 
 Prepare with `scripts/game_port_prepare.py prepare --game opentyrian --allow-network`.
 Build the exported pin offline, applying the checked-in patches (`patches/`, in
@@ -72,6 +73,54 @@ game quits. Back up the drawer to keep them; the game data in `data/` is never
 written.
 The data digest is pinned in the runtime manifest. Assets stay external;
 freeware is not permission to redistribute every asset without review.
+
+## Observed 2 November 2026
+
+Lab `lab:opentyrian`, a copy of Instance-32 (Kickstart 47.100, 68040 + 68882,
+AGA plus the RTG board, OpenGPU's SDL2.module, openinput.library 1.3, AHI with
+the acaudio driver), built by Cradle's `stove_build` with OpenAmigaGCC
+16.2.0-open4 from this repository's patches 0001 to 0004 (executable SHA-256
+`ac7115c810ddac443c4280632cc3fef1966a56b5b62ed370fa78e97d031dec64`), data
+staged by `runtime-data/build-amiga.sh` (85 files from the pinned ZIP).
+
+- Display: the frame is whole on a 640x480 screen at 2x, and in an exactly
+  320x200 Workbench window after Alt+Return (and back).
+- Keyboard: menus, movement, fire, change fire mode, both sidekick keys, pause,
+  the Escape menu and text entry all worked (see the step PRs for the
+  screenshots).
+- Joystick: GFOpenInput's port-2 stick is found (21-button game controller
+  layout) and Options > Joystick shows the defaults, Start and the shoulders
+  included. No stick or pad press could be sent from the lab tools, so pad
+  play is not yet exercised.
+- Audio: SDL opened AHI at 44.1 kHz mono, 1024-sample buffers. The lab is
+  muted, so nothing was heard; the buffer count held at 43 a second (no late
+  buffer) in menus, the attract run and play, with 8 to 21 % of the time in the
+  mixer, except where noted below.
+- Saves: a game saved to slot 1, the game quit, started again and loaded with
+  the same level, credits, rear gun and sidekick. Quitting from the title
+  writes `opentyrian.cfg`, `tyrian.cfg` and `tyrian.sav` to `PROGDIR:User`.
+- Play: level 1 (Tyrian) played by hand with taps and then with fire held and
+  the ship swaying (`tests/lab` HoldKeys); that ship was shot down within a
+  minute and the game went back to the Game Menu as it should. Level 2 was
+  reached with upstream's `--constant` test mode and its invincibility key
+  (C, "Cheaters always prosper"): level 1's boss destroyed, then ASTEROID2
+  played for several minutes. That run is a check of level change and level 2,
+  not a fair completion by a player.
+- Frame rate (`OPENTYRIAN_FPS`): 34.6 to 34.8 frames a second in menus and play
+  on both levels, the game's own pace (Normal speed, 34.8), dipping to 33.3 in
+  the busiest moments. Twice the game fell behind for about a minute (16.5 to
+  30 frames a second, 177 to 209 audio buffers in five seconds, so stuttering
+  sound): once in the first minute after the lab booted, and once at the start
+  of the invincible level 1 run while other teams' labs shared the host. It
+  recovered both times without any change; the cause is not established.
+- Ctrl-C (`Break`) ends the game without writing `opentyrian.cfg`; that is
+  upstream's handling of SDL's quit event. Quit from the menus to keep
+  settings.
+
+Remaining before release: a person's play through more levels with a CD32 or
+USB pad, audio heard on a machine with sound, the two slow spells explained,
+AGA without RTG, packaging (icon, drawer, notices, data fetch for users) and
+the licence/data review. This is TESTING, not RELEASE.
 
 ## Observed 24 October 2026
 
