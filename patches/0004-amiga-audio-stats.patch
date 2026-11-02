@@ -1,0 +1,96 @@
+--- a/src/loudness.c
++++ b/src/loudness.c
+@@ -75,6 +75,10 @@ static Uint8 channelVolume[CHANNEL_COUNT];
+ #define CHANNEL_VOLUME_LEVELS 8
+ 
+ static void audioCallback(void *userdata, Uint8 *stream, int size);
++#ifdef __amigaos__
++static void audioCallbackTimed(void *userdata, Uint8 *stream, int size);
++Uint32 audioStatBuffers, audioStatMicroseconds;
++#endif
+ 
+ static void load_song(unsigned int song_num);
+ 
+@@ -90,6 +94,9 @@ bool init_audio(void)
+ 	ask.channels = 1;
+ 	ask.samples = 256 * OUTPUT_QUALITY; // ~23 ms
+ 	ask.callback = audioCallback;
++#ifdef __amigaos__
++	ask.callback = audioCallbackTimed;
++#endif
+ 
+ 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0)
+ 	{
+@@ -116,6 +123,11 @@ bool init_audio(void)
+ 	}
+ 
+ 	audioSampleRate = got.freq;
++#ifdef __amigaos__
++	logInfo("Audio: %s, %d Hz, %d channel(s), %d samples a buffer",
++	        SDL_GetCurrentAudioDriver() != NULL ? SDL_GetCurrentAudioDriver() : "?",
++	        got.freq, got.channels, got.samples);
++#endif
+ 
+ 	samplesPerLdsUpdate = 2 * (audioSampleRate / ldsUpdate2Rate);
+ 	samplesPerLdsUpdateFrac = 2 * (audioSampleRate % ldsUpdate2Rate);
+@@ -230,6 +242,17 @@ static void audioCallback(void *userdata, Uint8 *stream, int size)
+ 	}
+ }
+ 
++#ifdef __amigaos__
++static void audioCallbackTimed(void *userdata, Uint8 *stream, int size)
++{
++	const Uint64 start = SDL_GetPerformanceCounter();
++	audioCallback(userdata, stream, size);
++	const Uint64 spent = SDL_GetPerformanceCounter() - start;
++	audioStatBuffers += 1;
++	audioStatMicroseconds += (Uint32)(spent * 1000000 / SDL_GetPerformanceFrequency());
++}
++#endif
++
+ void deinit_audio(void)
+ {
+ 	if (audio_disabled)
+--- a/src/loudness.h
++++ b/src/loudness.h
+@@ -27,6 +27,11 @@ extern unsigned int song_playing;
+ 
+ extern bool audio_disabled, music_disabled, samples_disabled;
+ 
++#ifdef __amigaos__
++// Buffers mixed and the microseconds spent mixing them, for OPENTYRIAN_FPS.
++extern Uint32 audioStatBuffers, audioStatMicroseconds;
++#endif
++
+ bool init_audio(void);
+ void deinit_audio(void);
+ 
+--- a/src/video.c
++++ b/src/video.c
+@@ -20,6 +20,9 @@
+ 
+ #include "keyboard.h"
+ #include "logging.h"
++#ifdef __amigaos__
++#include "loudness.h"
++#endif
+ #include "video_scale.h"
+ 
+ #include <assert.h>
+@@ -433,10 +436,13 @@ static void scale_and_flip(SDL_Surface *src_surface)
+ 		if (now - fps_start >= 5000)
+ 		{
+ 			const Uint32 ms = now - fps_start;
+-			char line[96];
+-			SDL_snprintf(line, sizeof(line), "fps: %u frames in %u ms (%u.%u a second)",
++			char line[160];
++			SDL_snprintf(line, sizeof(line), "fps: %u frames in %u ms (%u.%u a second); audio: %u buffers, %u ms mixing",
+ 			             (unsigned)fps_frames, (unsigned)ms,
+-			             (unsigned)(fps_frames * 1000 / ms), (unsigned)(fps_frames * 10000 / ms % 10));
++			             (unsigned)(fps_frames * 1000 / ms), (unsigned)(fps_frames * 10000 / ms % 10),
++			             (unsigned)audioStatBuffers, (unsigned)(audioStatMicroseconds / 1000));
++			audioStatBuffers = 0;
++			audioStatMicroseconds = 0;
+ 			FILE *f = fps_file != NULL ? fopen(fps_file, "a") : NULL;
+ 			if (f != NULL)
+ 			{
