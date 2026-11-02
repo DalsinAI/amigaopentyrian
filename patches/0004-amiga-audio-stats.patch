@@ -77,7 +77,7 @@
  #include "video_scale.h"
  
  #include <assert.h>
-@@ -433,10 +436,13 @@ static void scale_and_flip(SDL_Surface *src_surface)
+@@ -440,10 +443,13 @@ static void scale_and_flip(SDL_Surface *src_surface)
  		if (now - fps_start >= 5000)
  		{
  			const Uint32 ms = now - fps_start;
