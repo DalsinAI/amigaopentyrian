@@ -1,0 +1,54 @@
+OpenTyrian @VERSION@ for AmigaOS 3.x (AmiCradle)
+=====================================================
+
+OpenTyrian is the open-source engine of Tyrian, the vertical shoot-'em-up.
+This is its AmigaOS 3.x build for a 68040 or 68060 with an FPU, with SDL 2
+through GFOpenGPU. Status: TESTING, not a release.
+
+Requirements
+------------
+
+- AmigaOS 3.2, a 68040 or 68060 with an FPU, AmiCradle or an RTG board.
+- GFOpenGPU's SDL2.module in LIBS:GFOpenGPU/ from gfopenrtg's main of
+  2 November 2026 or later (the game's own 320x200 screen).
+- AHI for sound. GFOpenInput for pads (lowlevel.library alone gives the
+  joystick port).
+- The Tyrian 2.1 game data (freeware, not in this archive): see
+  data/ReadMe.txt.
+
+Installing
+----------
+
+Unpack the archive where you keep games (lha x opentyrian-...lha Games:),
+then put the Tyrian 2.1 data in the drawer's data drawer. Settings and
+saves go to the drawer's User drawer, made on the first run.
+
+Playing
+-------
+
+- Double-click the game's icon, or from a Shell: cd to the drawer, then
+  opentyrian. Options: --no-sound, --no-joystick, --data=DRAWER.
+- The game starts on a 320x200 screen of its own. Alt+Return switches to a
+  window and back.
+- Keys: the arrow keys move, Space fires, Return changes the rear gun's
+  mode, Ctrl and Left Alt fire the sidekicks, P pauses, Escape opens the
+  menu. The mouse moves the ship too. Pads: A fires, B changes mode, X and
+  Y fire the sidekicks, Start opens the menu.
+- Quit from the menus to keep the settings (Ctrl-C does not save them).
+
+Licence
+-------
+
+OpenTyrian is GPL-2.0-or-later (COPYING.txt); its source is at
+https://github.com/opentyrian/opentyrian. The Tyrian 2.1 data is freeware
+from its makers under its own terms and is not part of this archive. The
+icons are drawn from OpenTyrian's own program icon.
+
+Build
+-----
+
+Engine commit @SOURCE_COMMIT@, built with OpenAmigaGCC
+@COMPILER_RELEASE@. The program's SHA-256:
+@EXECUTABLE_SHA256@
+
+Port: the AmiCradle Team, https://github.com/DalsinAI/amigaopentyrian

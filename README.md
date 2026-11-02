@@ -76,6 +76,29 @@ written.
 The data digest is pinned in the runtime manifest. Assets stay external;
 freeware is not permission to redistribute every asset without review.
 
+### Package and icons
+
+Target `package` (`package/build-amiga.sh`) builds the game as `.` does and
+packs the release archive with `tools/make_package.py`:
+`opentyrian-VERSION-68040.lha` (LhA level-1, `-lh5-`, written by
+`tools/lha_archive.py`) holding the `OpenTyrian` drawer and `OpenTyrian.info`
+beside it, with the `.sha256`, an Aminet `.readme`, `package.json`, the drawer
+as it unpacks and `OpenTyrian.tar` (for a lab: `untar` unpacks it on the
+Amiga). `package/package.json` lists what goes in the drawer: the program,
+`ReadMe` (from `package/ReadMe.in`), `COPYING.txt` (the engine's GPL-2.0) and
+`data/ReadMe.txt`, which says where the Tyrian 2.1 data comes from. The data
+itself is not packed (`gameports/runtime-data.json`'s policy).
+
+The drawer, the game and the documents have OS 3.5 GlowIcons (`icons/*.info`):
+the classic four-colour picture for older Workbenches and two colour frames,
+drawn from OpenTyrian's own program icon (`icons/art/opentyrian.png`, from
+upstream's `linux/icons/tyrian-128.png`). They are committed, so the package
+needs nothing else; to draw them again, with a DalsinAI/amicradle checkout:
+
+```sh
+python3 ../amicradle/scripts/port_icons.py icons/icons.json --out icons
+```
+
 ## Observed 2 November 2026: SDL's real full screen
 
 GFOpenRTG's SDL2 module now gives SDL's real full screen a screen of the

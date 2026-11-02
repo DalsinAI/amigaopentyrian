@@ -1,0 +1,10 @@
+{
+  "about": "The Workbench icons of the OpenTyrian drawer: python3 AMICRADLE/scripts/port_icons.py icons/icons.json --out icons (DalsinAI/amicradle). The art is OpenTyrian's own program icon (upstream linux/icons/tyrian-128.png at the pinned commit, GPL-2.0-or-later with the engine).",
+  "drawer": {"name": "OpenTyrian"},
+  "badge": "art/opentyrian.png",
+  "icons": [
+    {"file": "opentyrian.info", "kind": "tool", "stack": 262144},
+    {"file": "ReadMe.info", "kind": "readme"},
+    {"file": "COPYING.txt.info", "kind": "readme"}
+  ]
+}
