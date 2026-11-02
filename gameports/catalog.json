@@ -15,7 +15,9 @@
         "mode": "auto-fetch",
         "dataset": "tyrian-2.1",
         "manifest": "gameports/runtime-data.json"
-      }
+      },
+      "stage": "TESTING",
+      "stageEvidence": "README.md, Observed 2 November 2026: lab:opentyrian, patches 0001-0004, open4 build; level 2 reached in upstream's constant test mode; pads and heard audio not yet qualified."
     }
   }
 }
