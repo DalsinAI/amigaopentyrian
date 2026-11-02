@@ -1,0 +1,83 @@
+--- a/src/config.c
++++ b/src/config.c
+@@ -248,8 +248,16 @@ static const char *const opentyrianConfigFilename = "opentyrian.cfg";
+ static void loadOpenTyrianConfig(void)
+ {
+ 	// defaults
++#ifdef __amigaos__
++	/* The game draws 320x200: on an Amiga it is shown 1:1 on a screen of
++	   its own (Alt+Return gives a window of exactly that size), with no
++	   CPU scaler in the way. Setup > Graphics still offers the others. */
++	fullscreen_display = 0;
++	set_scaler_by_name("None");
++#else
+ 	fullscreen_display = -1;
+ 	set_scaler_by_name("Scale2x");
++#endif
+ 	memcpy(keySettings, defaultKeySettings, sizeof(keySettings));
+ 	
+ 	Config *config = &opentyrian_config;
+--- a/src/video.c
++++ b/src/video.c
+@@ -210,7 +210,14 @@ void reinit_fullscreen(int new_display)
+ 	{
+ 		window_center_in_display(fullscreen_display);
+ 
++#ifdef __amigaos__
++		/* A screen of the game's own, as Amiga games have: the AmigaOS SDL
++		   opens one for the window's size (a native mode on AGA; on RTG the
++		   driver scales the frame to the mode it finds). */
++		if (SDL_SetWindowFullscreen(main_window, SDL_WINDOW_FULLSCREEN) != 0)
++#else
+ 		if (SDL_SetWindowFullscreen(main_window, SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
++#endif
+ 		{
+ 			reinit_fullscreen(-1);
+ 			return;
+@@ -317,6 +324,12 @@ static void calc_dst_render_rect(SDL_Surface *const src_surface, SDL_Rect *const
+ 	// in the window.
+ 
+ 	int win_w, win_h;
++#ifdef __amigaos__
++	/* What the renderer can show, not what SDL was asked to make the window:
++	   when an Intuition window has not (yet) taken a new size, a picture
++	   laid out for the asked size would be cut off at the right and bottom. */
++	if (SDL_GetRendererOutputSize(main_window_renderer, &win_w, &win_h) != 0)
++#endif
+ 	SDL_GetWindowSize(main_window, &win_w, &win_h);
+ 
+ 	int maxh_width, maxw_height;
+@@ -393,6 +406,33 @@ static void scale_and_flip(SDL_Surface *src_surface)
+ 
+ 	// Save output rect to be used by mouse functions
+ 	last_output_rect = dst_rect;
++
++#ifdef __amigaos__
++	/* SetEnv OPENTYRIAN_FPS 1: every five seconds, how many frames were
++	   shown, for measuring the port on a given machine. */
++	static int fps_on = -1;
++	static Uint32 fps_start, fps_frames;
++	if (fps_on < 0)
++	{
++		const char *env = SDL_getenv("OPENTYRIAN_FPS");
++		fps_on = env != NULL && env[0] != '\0' && env[0] != '0';
++		fps_start = SDL_GetTicks();
++		fps_frames = 0;
++	}
++	if (fps_on)
++	{
++		fps_frames += 1;
++		const Uint32 now = SDL_GetTicks();
++		if (now - fps_start >= 5000)
++		{
++			const Uint32 ms = now - fps_start;
++			logInfo("fps: %u frames in %u ms (%u.%u a second)", (unsigned)fps_frames, (unsigned)ms,
++			        (unsigned)(fps_frames * 1000 / ms), (unsigned)(fps_frames * 10000 / ms % 10));
++			fps_start = now;
++			fps_frames = 0;
++		}
++	}
++#endif
+ }
+ 
+ /** Maps a specified point in game screen coordinates to window coordinates. */
