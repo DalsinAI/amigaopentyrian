@@ -60,6 +60,16 @@ driver on AmiCradle); `--no-sound` turns it off. The log says what SDL opened
 `OPENTYRIAN_FPS` set, each five-second line also gives the buffers mixed and
 the time spent mixing them: 215 or 216 buffers in five seconds (44100 / 1024 a
 second) means none was late.
+
+### Saves and settings
+
+Everything the game writes is in `PROGDIR:User` (`patches/0001`), made on first
+run: `tyrian.sav` (the ten save slots and the last level reached),
+`tyrian.cfg` (upstream's game settings) and `opentyrian.cfg` (display,
+keyboard and joystick choices). Saving from the Game Menu (Options > Save)
+writes `tyrian.sav` at once; the two configuration files are written when the
+game quits. Back up the drawer to keep them; the game data in `data/` is never
+written.
 The data digest is pinned in the runtime manifest. Assets stay external;
 freeware is not permission to redistribute every asset without review.
 
