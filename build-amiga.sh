@@ -49,17 +49,6 @@ if got is None and (stove / "STOVE.json").is_file() and \
         sys.exit(f"STOVE.json says GFOpenAmigaGCC 16.2.0-open5, the compiler says {v.splitlines()[:1]}")
     got = "unpublished"
     known[got] = "16.2.0-open5"
-# GFOpenAmigaGCC 16.2.0-open6 built locally (amicradle-ci's default stove from
-# 6 November 2026): its STOVE.json names no compiler archive either, so it too
-# is known by its release and the compiler's own --version
-if got is None and (stove / "STOVE.json").is_file() and \
-        json.loads((stove / "STOVE.json").read_text()).get("release") == "GFOpenAmigaGCC 16.2.0-open6":
-    import subprocess
-    v = subprocess.run([str(stove / "prefix/bin/m68k-amigaos-gcc"), "--version"], capture_output=True, text=True).stdout
-    if "(GFOpenAmigaGCC 16.2.0-open6)" not in v:
-        sys.exit(f"STOVE.json says GFOpenAmigaGCC 16.2.0-open6, the compiler says {v.splitlines()[:1]}")
-    got = "unpublished-open6"
-    known[got] = "16.2.0-open6"
 if got not in known:
     for name in ("STOVE.json", "provenance.json"):
         if (stove / name).is_file():
