@@ -1,10 +1,22 @@
 {
-  "about": "The Workbench icons of the OpenTyrian drawer: python3 AMICRADLE/scripts/port_icons.py icons/icons.json --out icons (DalsinAI/amicradle). The art is OpenTyrian's own program icon (upstream linux/icons/tyrian-128.png at the pinned commit, GPL-2.0-or-later with the engine).",
-  "drawer": {"name": "OpenTyrian"},
+  "about": "The Workbench icons of the OpenTyrian drawer: python3 AMICRADLE/scripts/port_icons.py icons/icons.json --out icons (DalsinAI/amicradle). The art (art/opentyrian.svg, drawn as an OS 3.5 GlowIcon: shaped, shaded, see-through round the edges) is The AmiCradle Team's own, under the same terms as the other Amiga files; art/opentyrian.png is it rendered at 128 x 128.",
+  "drawer": {
+    "name": "OpenTyrian"
+  },
   "badge": "art/opentyrian.png",
   "icons": [
-    {"file": "opentyrian.info", "kind": "tool", "stack": 262144},
-    {"file": "ReadMe.info", "kind": "readme"},
-    {"file": "COPYING.txt.info", "kind": "readme"}
+    {
+      "file": "opentyrian.info",
+      "kind": "tool",
+      "stack": 262144
+    },
+    {
+      "file": "ReadMe.info",
+      "kind": "readme"
+    },
+    {
+      "file": "COPYING.txt.info",
+      "kind": "readme"
+    }
   ]
 }
