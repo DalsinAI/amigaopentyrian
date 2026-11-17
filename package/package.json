@@ -3,21 +3,75 @@
   "drawer_icon": "icons/OpenTyrian.info",
   "archive": "opentyrian-{version}-68040",
   "members": [
-    {"name": "opentyrian", "build": "OpenTyrian/opentyrian", "check": "executable_sha256"},
-    {"name": "opentyrian.info", "repo": "icons/opentyrian.info"},
-    {"name": "ReadMe", "readme": "package/ReadMe.in"},
-    {"name": "ReadMe.info", "repo": "icons/ReadMe.info"},
-    {"name": "COPYING.txt", "repo": "package/COPYING.txt"},
-    {"name": "COPYING.txt.info", "repo": "icons/COPYING.txt.info"},
-    {"name": "data/ReadMe.txt", "repo": "package/data-ReadMe.txt"}
+    {
+      "name": "opentyrian",
+      "build": "OpenTyrian/opentyrian",
+      "check": "executable_sha256"
+    },
+    {
+      "name": "opentyrian.info",
+      "repo": "icons/opentyrian.info"
+    },
+    {
+      "name": "ReadMe",
+      "readme": "package/ReadMe.in"
+    },
+    {
+      "name": "ReadMe.info",
+      "repo": "icons/ReadMe.info"
+    },
+    {
+      "name": "COPYING.txt",
+      "repo": "package/COPYING.txt"
+    },
+    {
+      "name": "COPYING.txt.info",
+      "repo": "icons/COPYING.txt.info"
+    },
+    {
+      "name": "data/ReadMe.txt",
+      "repo": "package/data-ReadMe.txt"
+    }
   ],
   "aminet": [
-    ["Short", "OpenTyrian shoot-'em-up, 68040+FPU"],
-    ["Author", "OpenTyrian: The OpenTyrian Development Team; port: AmiCradle Team"],
-    ["Uploader", "AmiCradle Team"],
-    ["Type", "game/shoot"],
-    ["Version", "{version}"],
-    ["Requires", "AmigaOS 3.2, 68040/68060 with FPU, GFOpenGPU SDL2, AHI, Tyrian 2.1 data"],
-    ["Architecture", "m68k-amigaos >= 3.2"]
+    [
+      "Short",
+      "OpenTyrian shoot-'em-up, 68040+FPU"
+    ],
+    [
+      "Author",
+      "OpenTyrian: The OpenTyrian Development Team; port: AmiCradle Team"
+    ],
+    [
+      "Uploader",
+      "AmiCradle Team"
+    ],
+    [
+      "Type",
+      "game/shoot"
+    ],
+    [
+      "Version",
+      "{version}"
+    ],
+    [
+      "Requires",
+      "AmigaOS 3.2, 68040/68060 with FPU, GFOpenGPU SDL2, AHI, Tyrian 2.1 data"
+    ],
+    [
+      "Architecture",
+      "m68k-amigaos >= 3.2"
+    ]
+  ],
+  "root": [
+    {
+      "name": "Install-OpenTyrian",
+      "repo": "package/installer/Install-OpenTyrian",
+      "installer": true
+    },
+    {
+      "name": "Install-OpenTyrian.info",
+      "repo": "package/installer/Install-OpenTyrian.info"
+    }
   ]
 }

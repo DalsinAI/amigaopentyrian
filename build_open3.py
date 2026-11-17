@@ -47,7 +47,7 @@ def main():
             subprocess.run(["patch", "--batch", "--forward", "--fuzz=0", "-p1"],
                            cwd=work, stdin=content, check=True)
         patches[patch.name] = digest(patch)
-    flags = f"-noixemul -m68040 -m68881 -fno-delete-null-pointer-checks -pthread -O2 -ffile-prefix-map={work}=."
+    flags = f"-noixemul -m68040 -msoft-float -fno-delete-null-pointer-checks -pthread -O2 -ffile-prefix-map={work}=."
     command = ["make", "-j", str(args.jobs), "PLATFORM=AMIGA", "WITH_NETWORK=false",
                f"CC={stove / 'prefix/bin/m68k-amigaos-gcc'}", f"CFLAGS={flags}",
                f"SDL_CPPFLAGS=-I{sdk / 'include/SDL2'}", f"SDL_LDFLAGS=-L{sdk / 'lib'}",

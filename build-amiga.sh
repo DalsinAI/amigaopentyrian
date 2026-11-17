@@ -61,13 +61,21 @@ for patch in "$HERE"/patches/*.patch; do
 done
 
 # -fno-delete-null-pointer-checks: address 0 is memory on an Amiga
-FLAGS="-noixemul -m68040 -m68881 -fno-delete-null-pointer-checks -pthread -O2 -ffile-prefix-map=$WORK/src=."
+FLAGS="-noixemul -m68040 -msoft-float -fno-delete-null-pointer-checks -pthread -O2 -ffile-prefix-map=$WORK/src=."
 ( cd "$WORK/src" && SOURCE_DATE_EPOCH=$EPOCH make -j "$JOBS" PLATFORM=AMIGA WITH_NETWORK=false \
     CC="$CC" CFLAGS="$FLAGS" SDL_CPPFLAGS="-I$SDK/include/SDL2" SDL_LDFLAGS="-L$SDK/lib" \
-    SDL_LDLIBS="-lSDL2 -lGL -lm -pthread" TYRIAN_DIR=PROGDIR:data "VCS_IDREV=printf ${PIN}" )
+    SDL_LDLIBS="-lSDL2 -lGL -lm -pthread" TYRIAN_DIR=PROGDIR:data "VCS_IDREV=printf ${PIN}" ) \
+    > "$WORK/make.log" 2>&1 || { tail -n 60 "$WORK/make.log"; exit 1; }
+cat "$WORK/make.log"
 
 EXE="$WORK/src/opentyrian"
 [ "$(od -An -tx1 -N4 "$EXE" | tr -d ' \n')" = "000003f3" ] || { echo "not an Amiga HUNK executable"; exit 2; }
+# One binary for every 68040 and 68060: -m68040 -msoft-float throughout, no
+# FPU instruction in the objects, the stove's fpuauto linked in
+# (package/soft-float.sh).
+sh "$HERE/package/soft-float.sh" "$P" "$EXE" --log "$WORK/make.log" "$WORK/src" > "$WORK/soft-float.txt" ||
+    { cat "$WORK/soft-float.txt"; exit 1; }
+cat "$WORK/soft-float.txt"
 mkdir -p "$OUT/OpenTyrian"
 cp "$EXE" "$OUT/OpenTyrian/opentyrian"
 
