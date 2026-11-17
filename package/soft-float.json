@@ -1,0 +1,13 @@
+{
+  "makefiles": [
+    "build-amiga.sh",
+    "build_open3.py"
+  ],
+  "no_cpu": [
+    "build-amiga.sh",
+    "build_open3.py"
+  ],
+  "builds": [
+    "build-amiga.sh"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "OpenTyrian",
+  "version": "2.1-ac5d0e7-amiga1-rc1",
+  "drawer": "OpenTyrian",
+  "program": "opentyrian",
+  "cpu": "68040",
+  "fpu": true,
+  "space": 3000000,
+  "modules": [
+    "SDL2.module",
+    "GL.module"
+  ],
+  "keep": [
+    "data"
+  ],
+  "parent": "Work:Games",
+  "badge": "../icons/art/opentyrian.png"
+}
